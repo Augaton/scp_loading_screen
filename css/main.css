@@ -1,4 +1,8 @@
-/* STYLE TERMINAL SCP MODERNE */
+/* ============================================
+   STYLE TERMINAL SCP MODERNE (RESPONSIVE)
+============================================ */
+
+/* Base écran */
 body {
   background: #000;
   color: #00ff9c;
@@ -7,7 +11,9 @@ body {
   overflow: hidden;
 }
 
-/* Effet CRT */
+/* ============================================
+   EFFET CRT
+============================================ */
 .crt::before {
   content: "";
   position: fixed;
@@ -24,40 +30,95 @@ body {
   opacity: 0.25;
 }
 
-/* Conteneur terminal */
+.crt { pointer-events: none !important; }
+
+/* ============================================
+   CONTAINER RESPONSIVE
+============================================ */
+/* Taille contrôlée du terminal – empêche qu'il prenne tout l'écran */
 #terminal-container {
-  width: 900px;
-  max-width: 92%;
-  margin: 5% auto;
-  padding: 20px;
-  background: rgba(0, 20, 10, 0.25);
-  border: 2px solid #00ff9c;
-  box-shadow: 0 0 25px #00ff9c55;
+    width: 60vw;                  /* largeur stable */
+    max-width: 900px;             /* limite haute */
+    min-width: 580px;             /* limite basse */
+    margin: 5vh auto;             /* centré */
+    padding: 25px;
+
+    background: rgba(0, 20, 10, 0.25);
+    border: 2px solid #00ff9c;
+    box-shadow: 0 0 25px #00ff9c55;
+    position: relative;
+    border-radius: 6px;
+
+    max-height: 90vh;             /* NE JAMAIS déborder l’écran */
+    overflow: hidden;
+
+    animation: terminalFadeIn 1.5s ease-out;
 }
 
+
+@keyframes terminalFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+        filter: brightness(0);
+    }
+    40% {
+        opacity: 0.4;
+        filter: brightness(1.7);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+        filter: brightness(1);
+    }
+}
+
+/* Flash scanline de démarrage */
+#terminal-container::after {
+    content: "";
+    position: absolute;
+    top: -200%;
+    left: 0;
+    width: 100%;
+    height: 200%;
+    background: linear-gradient(
+        180deg,
+        transparent 40%,
+        rgba(0,255,150,0.35) 50%,
+        transparent 60%
+    );
+    pointer-events: none;
+    animation: scanFlash 1.2s ease-out;
+}
+
+@keyframes scanFlash {
+    0% { transform: translateY(-100%); opacity: 1; }
+    100% { transform: translateY(100%); opacity: 0; }
+}
+
+
+/* ============================================
+   HEADER
+============================================ */
 #terminal-header {
-  font-size: 20px;
+  font-size: clamp(16px, 2vw, 26px);
   margin-bottom: 16px;
   text-shadow: 0 0 8px #00ff9c;
   letter-spacing: 2px;
 }
 
-/* Corps terminal */
+/* ============================================
+   CORPS DU TERMINAL RESPONSIVE
+============================================ */
 #terminal-body {
-  font-size: 18px;
-  line-height: 1.6em;
+  font-size: clamp(14px, 1.5vw, 20px);
+  line-height: 1.55em;
+  pointer-events: auto;
 }
 
-#history {
-  color: #7fffd4;
-  font-size: 16px;
-  margin: 10px 0;
-  max-height: 200px;
-  overflow-y: auto;
-}
-
-#line {
-  white-space: pre;
+button, .clickable {
+    pointer-events: auto;
+    cursor: pointer;
 }
 
 .line-sep {
@@ -65,7 +126,13 @@ body {
   margin: 12px 0;
 }
 
-/* Curseur Terminal */
+#line {
+  white-space: pre;
+}
+
+/* ============================================
+   CURSEUR
+============================================ */
 #cursor {
   display: inline-block;
   margin-top: 10px;
@@ -77,28 +144,27 @@ body {
   100% { opacity: 0; }
 }
 
-/* Loading section */
+/* ============================================
+   ZONE STATUS / LOADING
+============================================ */
 #loading {
   margin-top: 15px;
-  font-size: 16px;
+  font-size: clamp(12px, 1.3vw, 18px);
   color: #b0ffde;
 }
 
-/* Désactivation des éléments visuels inutiles */
+/* Désactivation éléments inutiles du template */
 .background,
 .overhaul,
 .under-nav,
 .loading-box,
 nav,
 main,
-#debug {
-  display: none !important;
-}
+#debug { display: none !important; }
 
-/* ============================
-      SCANLINE CRT DYNAMIQUE
-=============================== */
-
+/* ============================================
+   SCANLINES
+============================================ */
 #terminal-wrapper {
     position: relative;
     overflow: hidden;
@@ -107,10 +173,7 @@ main,
 #terminal-wrapper::before {
     content: "";
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     background: repeating-linear-gradient(
         to bottom,
         rgba(0, 255, 150, 0.07) 0px,
@@ -128,10 +191,9 @@ main,
     100% { transform: translateY(100%); }
 }
 
-/* ============================
-      TYPING EFFECT
-=============================== */
-
+/* ============================================
+   EFFET TYPING
+============================================ */
 .typing {
     display: inline-block;
     border-right: 2px solid #00ff9c;
@@ -143,10 +205,9 @@ main,
     50% { border-color: #00ff9c; }
 }
 
-/* ============================
-      GLITCH SCP-079
-=============================== */
-
+/* ============================================
+   GLITCH SCP-079
+============================================ */
 .glitch {
     position: relative;
     display: inline-block;
@@ -191,10 +252,9 @@ main,
     100% { clip-path: inset(20% 0 0 0); }
 }
 
-/* ============================
-     TERMINAL LOG CLEAN DESIGN
-=============================== */
-
+/* ============================================
+   LOGS RESPONSIVE
+============================================ */
 #history {
     font-family: "Ubuntu Mono", monospace;
     color: #00ff9c;
@@ -203,51 +263,40 @@ main,
     padding: 10px 12px;
     margin-top: 10px;
     white-space: pre-wrap;
-    max-height: 450px;
+    max-height: min(40vh, 450px);
     overflow-y: auto;
     line-height: 1.45em;
     box-shadow: inset 0 0 10px #00ff9c33;
+    font-size: clamp(12px, 1.3vw, 16px);
 }
 
-/* Chaque ligne de log */
-.log-line {
-    margin-bottom: 4px;
+/* Scrollbar invisible */
+#history {
+    scrollbar-width: none; 
+    -ms-overflow-style: none;
 }
+#history::-webkit-scrollbar { display: none!important; }
 
-/* Types de logs colorés */
+/* Logs colorés */
+.log-line { margin-bottom: 4px; }
 .log-status { color: #7affc6; }
 .log-dl     { color: #a6ffd9; }
 .log-file   { color: #4fffd0; }
 .log-error  { color: #ff6b6b; }
 .log-info   { color: #00ff9c; }
 
-/* Timestamp plus discret */
 .log-time {
     opacity: 0.6;
     margin-right: 4px;
+    font-size: clamp(10px, 1.2vw, 14px);
 }
 
-/* Scrollbar complètement désactivée */
-#history {
-    scrollbar-width: none;        /* Firefox */
-    -ms-overflow-style: none;     /* Edge / anciens */
-}
-
-#history::-webkit-scrollbar {
-    display: none !important;     /* Chrome / Safari */
-}
-
-#tip-line {
-    margin-top: 8px;
-    font-size: 14px;
-    color: #00ff9c88;
-    opacity: 0.7;
-    min-height: 20px;
-}
-
+/* ============================================
+   TIPS
+============================================ */
 #tip-container {
     margin-top: 8px;
-    font-size: 15px;
+    font-size: clamp(12px, 1.4vw, 17px);
     color: #00ff9c;
     opacity: 0.85;
     display: flex;
@@ -258,15 +307,27 @@ main,
     white-space: pre;
 }
 
+/* ============================================
+   MUSIQUE — LABEL
+============================================ */
 #music-status {
     position: absolute;
     top: 10px;
     right: 14px;
     color: #00ff9c88;
-    font-size: 13px;
+    font-size: clamp(10px, 1.2vw, 15px);
     font-family: "Ubuntu Mono", monospace;
     opacity: 0.7;
     user-select: none;
     text-align: right;
 }
 
+/* ============================================
+   RESPONSIVE PETITS ÉCRANS (HAUTEUR)
+============================================ */
+@media (max-height: 750px) {
+    #terminal-container {
+        scale: 0.87;
+        transform-origin: top center;
+    }
+}

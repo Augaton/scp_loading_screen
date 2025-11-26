@@ -169,39 +169,33 @@ window.onerror = function(msg, src, line) {
 // =====================================
 
 const tipText = document.getElementById("tip-text");
-const cursor = document.getElementById("cursor");
+let tipIndex = 0;
 
-let tipIndex2 = 0;
-
-function typeTipSequence(text, i = 0) {
-    if (i === 0) {
-        tipText.textContent = "> ";
-    }
+function typeTip(text, i = 0) {
+    tipText.textContent = "> " + text.substring(0, i);
 
     if (i < text.length) {
-        tipText.textContent = "> " + text.substring(0, i + 1);
-        setTimeout(() => typeTipSequence(text, i + 1), 25);
+        setTimeout(() => typeTip(text, i + 1), 25);
     } else {
-        // Pause avant effacement
-        setTimeout(() => eraseTipSequence(text), 2500);
+        setTimeout(() => eraseTip(text, text.length), 2500);
     }
 }
 
-function eraseTipSequence(text, i = text.length) {
+function eraseTip(text, i) {
+    tipText.textContent = "> " + text.substring(0, i);
+
     if (i > 0) {
-        tipText.textContent = "> " + text.substring(0, i - 1);
-        setTimeout(() => eraseTipSequence(text, i - 1), 18);
+        setTimeout(() => eraseTip(text, i - 1), 18);
     } else {
-        // Passe au tip suivant
-        tipIndex2 = (tipIndex2 + 1) % window.TIPS.length;
-        setTimeout(() => typeTipSequence(window.TIPS[tipIndex2]), 400);
+        tipIndex = (tipIndex + 1) % window.TIPS.length;
+        setTimeout(() => typeTip(window.TIPS[tipIndex]), 400);
     }
 }
 
-// Démarrage automatique
 if (window.TIPS && window.TIPS.length > 0) {
-    setTimeout(() => typeTipSequence(window.TIPS[0]), 2000);
+    setTimeout(() => typeTip(window.TIPS[0]), 2000);
 }
+
 
 // =====================================
 //       MULTI-MUSIC SYSTEM (SPACE)
@@ -230,6 +224,7 @@ function playTrack(index) {
     if (!track) return;
 
     music.src = track.file;
+    music.volume = Math.min(1.0, Math.max(0.0, window.MUSIC_VOLUME));
     music.play().catch(() => {
         musicEnabled = false;
     });
@@ -241,30 +236,8 @@ function playTrack(index) {
 function updateMusicStatus() {
     const track = window.MUSIC_LIST[currentTrack];
 
-    if (!musicEnabled) {
-        musicStatus.textContent = "[MUSIC: OFF]";
-        return;
-    }
-
-    musicStatus.textContent = `[MUSIC: ON]  ${track ? track.name : ""}`;
+    musicStatus.textContent = `[MUSIC: ${track ? track.name : ""} ]`;
 }
-
-// Toggle musique
-document.addEventListener("keydown", (e) => {
-    if (e.code === "Space") {
-        e.preventDefault();
-
-        if (musicEnabled) {
-            music.pause();
-            musicEnabled = false;
-        } else {
-            musicEnabled = true;
-            music.play();
-        }
-
-        updateMusicStatus();
-    }
-});
 
 // Auto suivante si lecture finit (si loop OFF dans config)
 music.addEventListener("ended", () => {
@@ -273,6 +246,10 @@ music.addEventListener("ended", () => {
     } else {
         currentTrack = chooseTrack();
     }
+    // Volume depuis la config
+    music.volume = Math.min(1.0, Math.max(0.0, window.MUSIC_VOLUME));
+
+
     playTrack(currentTrack);
 });
 
@@ -281,4 +258,3 @@ if (window.MUSIC_LIST && window.MUSIC_LIST.length > 0) {
     currentTrack = chooseTrack();
     playTrack(currentTrack);
 }
-

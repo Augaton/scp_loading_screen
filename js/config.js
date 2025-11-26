@@ -22,10 +22,13 @@ window.TIPS = [
 ];
 
 window.MUSIC_LIST = [
-    { name: "Specter", file: "music/music1.mp3" },
-    { name: "Dying to love", file: "music/music2.mp3" },
-    { name: "Left For Good", file: "music/music3.mp3" }
+    { name: "When Day Break", file: "music/music1.mp3" },
+    //{ name: "Dying to love", file: "music/music2.mp3" },
+    //{ name: "Left For Good", file: "music/music3.mp3" }
 ];
 
 // Lecture aléatoire ou dans l'ordre
 window.MUSIC_RANDOM = true; // true = aléatoire | false = ordre
+
+// Volume initial (entre 0 et 1)
+window.MUSIC_VOLUME = 0.01;
