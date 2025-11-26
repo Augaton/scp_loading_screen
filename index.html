@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Force refresh CSS -->
+    <script>
+        document.write('<link rel="stylesheet" href="css/main.css?' + Math.random() + '">');
+    </script>
+
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu+Mono&display=swap" rel="stylesheet"/>
+    <title>SCP Loading Terminal</title>
+</head>
+
+<audio id="music-player" loop></audio>
+<div id="music-status"></div>
+
+<body>
+
+    <!-- Effet CRT -->
+    <div class="crt"></div>
+
+    <div id="terminal-container">
+
+        <!-- HEADER CASSIE ANIMÉ -->
+        <h1 class="cassie-header cassie-reveal" data-text="LINK ESTABLISHED WITH C.A.S.S.I.E">
+            LINK ESTABLISHED WITH C.A.S.S.I.E
+        </h1>
+
+        <!-- HEADER GLITCH SCP -->
+        <div class="header glitch" data-text="SCP FOUNDATION // SECURE LOAD TERMINAL">
+            SCP FOUNDATION // SECURE LOAD TERMINAL
+        </div>
+
+        <div id="terminal-body">
+
+            <div>> INITIALIZING NODE: <span id="title" class="typing"></span></div>
+            <div>> MAP: <span id="map"></span></div>
+            <div>> STEAM ID: <span id="steamid"></span></div>
+
+            <div class="line-sep"></div>
+
+            <!-- CADRE CONFINEMENT ANIMÉ -->
+            <div class="containment-frame">
+                <div id="history"></div>
+            </div>
+
+            <div class="line-sep"></div>
+
+            <!-- STATUS + PROGRESSION -->
+            <div id="loading">
+                > STATUS: <span id="status"></span><br>
+                > PROGRESS: <span id="percent"></span>
+            </div>
+
+            <div id="tip-container">
+                <span id="tip-text"></span><span id="cursor">█</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- JS -->
+    <script src="js/lib/jquery-3.4.1.min.js"></script>
+
+    <script>
+        document.write('<script src="js/config.js?' + Math.random() + '"><\/script>');
+        document.write('<script src="js/main.js?' + Math.random() + '"><\/script>');
+    </script>
+
+</body>
+</html>
