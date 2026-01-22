@@ -13,16 +13,16 @@ window.TIPS = window.TIPS || ["Initializing..."];
 const isGmod = navigator.userAgent.includes("GMod") || navigator.userAgent.includes("Valve");
 
 window.onload = () => {
-    // 1. Appliquer la couleur de la config
+    // Appliquer la couleur
     document.body.style.setProperty("--main-color", window.TERMINAL_CONFIG.color || "#00ff9c");
 
-    // 2. Lancer la musique
+    // Musique
     if (window.MUSIC_LIST && window.MUSIC_LIST.length > 0) {
         currentTrack = chooseTrack();
         playTrack(currentTrack);
     }
 
-    // 3. Mode Auto-Démo si hors de GMOD
+    // Demo detection
     if (!isGmod) {
         console.log("%c[SYSTEM] Navigateur détecté : Lancement du mode Démo...", "color: #00ff9c; font-weight: bold;");
         runAdvancedSimulation();
@@ -33,7 +33,6 @@ window.onload = () => {
 };
 
 function runAdvancedSimulation() {
-    // Simulation du délai de chargement initial
     setTimeout(() => {
         // 1. Simulation des détails du serveur
         if (window.GameDetails) {
