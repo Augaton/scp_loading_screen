@@ -165,16 +165,7 @@ let allowHeaderGlitch = true;
 function randomGlitch() {
     if (!allowHeaderGlitch) return;
 
-    const phrases = [
-        "SCP FOUNDATION // SECURE LOAD TERMINAL",
-        "ACCESSING NODE…",
-        "LINK ESTABLISHED WITH CASSIE",
-        "WARNING: REALITY INSTABILITY",
-        "SCP-079 SIGNAL DETECTED",
-        "SYSTEM HOOK: LEVEL-3 AUTH"
-    ];
-
-    const pick = phrases[Math.floor(Math.random() * phrases.length)];
+    const pick = window.TERMINAL_CONFIG.phrases[Math.floor(Math.random() * window.TERMINAL_CONFIG.phrases.length)];
 
     const header = document.querySelector(".header");
     if (!header) return;

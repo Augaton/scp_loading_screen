@@ -10,7 +10,17 @@ window.TERMINAL_CONFIG = {
     maxLines: 120,
 
     // Préfix terminal
-    prefix: "> "
+    prefix: "> ",
+
+    phrases: [
+        "SCP FOUNDATION // SECURE LOAD TERMINAL",
+        "ACCESSING NODE…",
+        "LINK ESTABLISHED WITH CASSIE",
+        "WARNING: REALITY INSTABILITY",
+        "SCP-079 SIGNAL DETECTED",
+        "SYSTEM HOOK: LEVEL-3 AUTH"
+    ],
+
 };
 
 window.TIPS = [
