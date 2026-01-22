@@ -30,7 +30,15 @@ body {
   opacity: 0.25;
 }
 
-.crt { pointer-events: none !important; }
+.crt {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 999;
+    /* Vignettage : assombrit les bords pour simuler l'écran cathodique */
+    background: radial-gradient(circle, rgba(0,0,0,0) 60%, rgba(0,0,0,0.8) 120%);
+    /* Optionnel : légère distorsion si tu veux pousser le style */
+}
 
 /* ============================================
    CONTAINER RESPONSIVE
@@ -52,9 +60,16 @@ body {
     max-height: 90vh;             /* NE JAMAIS déborder l’écran */
     overflow: hidden;
 
-    animation: terminalFadeIn 1.5s ease-out;
+    animation: terminalFadeIn 1.5s ease-out, flicker 0.15s infinite;
 }
 
+@keyframes flicker {
+    0% { opacity: 0.993; }
+    5% { opacity: 0.985; }
+    10% { opacity: 0.995; }
+    15% { opacity: 0.98; }
+    100% { opacity: 1; }
+}
 
 @keyframes terminalFadeIn {
     0% {
@@ -268,6 +283,8 @@ main,
     line-height: 1.45em;
     box-shadow: inset 0 0 10px #00ff9c33;
     font-size: clamp(12px, 1.3vw, 16px);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 100%);
 }
 
 /* Scrollbar invisible */
@@ -282,7 +299,21 @@ main,
 .log-status { color: #7affc6; }
 .log-dl     { color: #a6ffd9; }
 .log-file   { color: #4fffd0; }
-.log-error  { color: #ff6b6b; }
+
+.log-error {
+    color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.15);
+    padding: 0 5px;
+    border-radius: 2px;
+    display: inline-block;
+    width: 100%;
+    animation: alert-blink 0.6s step-end infinite;
+}
+
+@keyframes alert-blink {
+    50% { background: rgba(255, 107, 107, 0.3); color: #fff; }
+}
+
 .log-info   { color: #00ff9c; }
 
 .log-time {

@@ -3,6 +3,95 @@
 // =========================
 
 const LOG = document.getElementById("history");
+window.TERMINAL_CONFIG = window.TERMINAL_CONFIG || { color: "#00ff9c" };
+window.TIPS = window.TIPS || ["Initializing..."];
+
+// =====================================
+//   DETECTION & AUTO-DEMO (HYBRIDE)
+// =====================================
+
+const isGmod = navigator.userAgent.includes("GMod") || navigator.userAgent.includes("Valve");
+
+window.onload = () => {
+    // 1. Appliquer la couleur de la config
+    document.body.style.setProperty("--main-color", window.TERMINAL_CONFIG.color || "#00ff9c");
+
+    // 2. Lancer la musique
+    if (window.MUSIC_LIST && window.MUSIC_LIST.length > 0) {
+        currentTrack = chooseTrack();
+        playTrack(currentTrack);
+    }
+
+    // 3. Mode Auto-Démo si hors de GMOD
+    if (!isGmod) {
+        console.log("%c[SYSTEM] Navigateur détecté : Lancement du mode Démo...", "color: #00ff9c; font-weight: bold;");
+        runAdvancedSimulation();
+    } else {
+        console.log("%c[SYSTEM] GMOD détecté : En attente du serveur...", "color: #00ff9c; font-weight: bold;");
+        addLog("> CONNECTION ESTABLISHED. AWAITING DATA...", "info");
+    }
+};
+
+function runAdvancedSimulation() {
+    // Simulation du délai de chargement initial
+    setTimeout(() => {
+        // 1. Simulation des détails du serveur
+        if (window.GameDetails) {
+            window.GameDetails(
+                "SITE-19 : SECURE FACILITY", 
+                "http://scp-foundation.net", 
+                "rp_site19_v4", 
+                64, 
+                "STEAM_0:1:52839100", 
+                "SCP-RP"
+            );
+        }
+
+        // 2. Simulation des changements de statut progressifs
+        const steps = [
+            { t: 0,    s: "Handshaking with Foundation Node..." },
+            { t: 4000, s: "Verifying Level 4 Clearance..." },
+            { t: 8000, s: "Bypassing Local Firewall..." },
+            { t: 12000,s: "Neural link established (C.A.S.S.I.E)" },
+            { t: 16000,s: "Decrypting asset manifest..." }
+        ];
+
+        steps.forEach(step => {
+            setTimeout(() => {
+                if (window.SetStatusChanged) window.SetStatusChanged(step.s);
+            }, step.t);
+        });
+
+        // 3. Simulation des fichiers (avec pics de vitesse)
+        let total = 120;
+        let current = 0;
+        if (window.SetFilesTotal) window.SetFilesTotal(total);
+
+        const fileInterval = setInterval(() => {
+            current++;
+            
+            // Simulation d'une erreur JS à 30%
+            if (current === 36) {
+                window.onerror("MEM_CORRUPTION: SCP-079_INTRUSION_DETECTED", "kernel.dll", 79);
+            }
+
+            const files = ["models/scp/173.mdl", "sound/alarm_01.wav", "maps/graphs/rp_site19.jgh", "materials/scifi/wall_panel.vmt"];
+            const randomFile = files[Math.floor(Math.random() * files.length)];
+            
+            if (window.DownloadingFile) window.DownloadingFile(randomFile);
+            if (window.SetFilesNeeded) window.SetFilesNeeded(total - current);
+
+            if (current >= total) {
+                clearInterval(fileInterval);
+                setTimeout(() => {
+                    if (window.SetStatusChanged) window.SetStatusChanged("TERMINAL READY - WELCOME DOCTOR");
+                    addLog("> ACCESS GRANTED. PRESS 'ANY KEY' TO START.", "status");
+                }, 1000);
+            }
+        }, 120); // Vitesse de croisière
+
+    }, 1500);
+}
 
 // =========================
 //   LOG TERMINAL
@@ -23,13 +112,15 @@ function addLog(text, type = "info") {
     });
 
 
-    div.innerHTML = `
-        <span class="log-time">[${time}]</span>
-        <span>${text}</span>
-    `;
+    div.innerHTML = `<span class="log-time">[${time}]</span> <span class="log-msg"></span>`;
+    div.querySelector(".log-msg").textContent = text;
 
     LOG.appendChild(div);
     LOG.scrollTop = LOG.scrollHeight;
+
+    if (LOG.children.length > 50) {
+        LOG.removeChild(LOG.firstChild);
+    }
 }
 
 addLog("> BOOT: Initializing Secure Load Terminal…");
@@ -241,15 +332,7 @@ function updateMusicStatus() {
 
 // Auto suivante si lecture finit (si loop OFF dans config)
 music.addEventListener("ended", () => {
-    if (window.MUSIC_RANDOM === false) {
-        currentTrack = (currentTrack + 1) % window.MUSIC_LIST.length;
-    } else {
-        currentTrack = chooseTrack();
-    }
-    // Volume depuis la config
-    music.volume = Math.min(1.0, Math.max(0.0, window.MUSIC_VOLUME));
-
-
+    currentTrack = chooseTrack();
     playTrack(currentTrack);
 });
 

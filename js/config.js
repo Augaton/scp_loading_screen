@@ -4,7 +4,7 @@ window.TERMINAL_CONFIG = {
     announcement: "> SECURE CONNECTION WITH FOUNDATION NODE ESTABLISHED",
 
     // Couleur principale (si besoin d’ajuster dynamiquement)
-    color: "#00ff96",
+    color: "#00ff9c",
 
     // Nombre max de lignes dans le terminal
     maxLines: 120,
