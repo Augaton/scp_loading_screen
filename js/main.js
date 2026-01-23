@@ -1,6 +1,6 @@
 // ============================================
 //   TERMINAL SCP - MAIN SCRIPT
-//   VERSION AMÉLIORÉE ET OPTIMISÉE
+//   VERSION OPTIMISÉE POUR GARRY'S MOD
 // ============================================
 
 // =========================
@@ -28,7 +28,9 @@ const state = {
     currentTrack: 0,
     musicEnabled: true,
     activeTypers: {},
-    allowHeaderGlitch: true
+    allowHeaderGlitch: true,
+    filesProcessed: 0,
+    lastLoggedPercent: -1
 };
 
 // =========================
@@ -95,7 +97,8 @@ window.onload = () => {
         runAdvancedSimulation();
     } else {
         console.log("%c[SYSTEM] GMOD détecté : En attente du serveur...", "color: #00ff9c; font-weight: bold;");
-        addLog("> CONNECTION ESTABLISHED. AWAITING DATA...", "info");
+        addLog("> GMOD CLIENT DETECTED", "status");
+        addLog("> AWAITING SERVER CONNECTION...", "info");
     }
 };
 
@@ -121,7 +124,7 @@ function addLog(text, type = "info") {
 
     LOG.appendChild(div);
     
-    // Auto-scroll avec animation fluide
+    // Auto-scroll avec animation fluide (compatible GMOD)
     requestAnimationFrame(() => {
         LOG.scrollTop = LOG.scrollHeight;
     });
@@ -183,69 +186,119 @@ function randomGlitch() {
 }
 
 // ============================
-//   CALLBACKS GMOD
+//   CALLBACKS GMOD (HOOKS)
 // ============================
 
-// GAME DETAILS
+/**
+ * GMOD HOOK: GameDetails
+ * Appelé au début du chargement avec les infos du serveur
+ */
 window.GameDetails = function(serverName, serverURL, mapName, maxPlayers, steamID, gamemode) {
-    // Typing pour les 3 champs (rarement appelés)
-    setTyped("title", serverName || "UNKNOWN NODE", 30);
-    setTyped("map", mapName || "UNKNOWN_MAP", 30);
-    setTyped("steamid", steamID || "N/A", 25);
+    console.log("[GMOD] GameDetails appelé:", { serverName, mapName, steamID, gamemode });
+    
+    // Typing pour les 3 champs (appelé UNE FOIS au début)
+    setTyped("title", serverName || "UNKNOWN NODE", 25);
+    setTyped("map", mapName || "UNKNOWN_MAP", 25);
+    setTyped("steamid", steamID || "N/A", 20);
 
-    // Empêcher glitch header pendant 1.2s
+    // Empêcher glitch header pendant le typing
     state.allowHeaderGlitch = false;
-    setTimeout(() => state.allowHeaderGlitch = true, 1200);
+    setTimeout(() => state.allowHeaderGlitch = true, 1500);
 
-    addLog("> INITIALIZING NODE: " + serverName);
+    // Logs
+    addLog("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+    addLog("> CONNECTION ESTABLISHED", "status");
+    addLog("> NODE: " + serverName, "info");
     addLog("> MAP: " + mapName, "info");
     addLog("> STEAM ID: " + steamID, "info");
     addLog("> GAMEMODE: " + gamemode, "info");
+    addLog("> MAX PLAYERS: " + maxPlayers, "info");
+    addLog("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 };
 
-// STATUS CHANGED
+/**
+ * GMOD HOOK: SetStatusChanged
+ * Appelé à chaque changement de statut
+ */
 window.SetStatusChanged = function(status) {
-    // PAS de typing ici → stabilité et rapidité
+    console.log("[GMOD] SetStatusChanged:", status);
+    
+    // Mise à jour DIRECTE sans typing (pour réactivité)
     if (elements.status) {
         elements.status.textContent = status;
     }
-    addLog("> STATUS: " + status, "status");
+    addLog("> " + status, "status");
 };
 
-// ============================
-//   PROGRESSION OPTIMISÉE
-// ============================
+/**
+ * GMOD HOOK: SetFilesTotal
+ * Appelé au début pour définir le total de fichiers
+ */
 window.SetFilesTotal = function(total) {
+    console.log("[GMOD] SetFilesTotal:", total);
+    
     state.totalFiles = total || 0;
-    addLog("> FILES: " + total + " total.", "info");
+    state.filesProcessed = 0;
+    state.lastPercent = -1;
+    state.lastLoggedPercent = -1;
+    
+    addLog("> TOTAL FILES: " + total, "info");
 };
 
+/**
+ * GMOD HOOK: SetFilesNeeded
+ * Appelé pour chaque fichier téléchargé
+ * needed = nombre de fichiers restants
+ */
 window.SetFilesNeeded = function(needed) {
     if (state.totalFiles === 0) return;
 
     const done = state.totalFiles - needed;
     const p = Math.floor((done / state.totalFiles) * 100);
 
-    // Éviter spam de typing si même %
+    // Mise à jour du pourcentage (sans typing pour réactivité)
     if (p !== state.lastPercent && elements.percent) {
         elements.percent.textContent = p + "%";
         state.lastPercent = p;
     }
 
-    // Log uniquement tous les 10%
-    if (p % 10 === 0 && p !== state.lastPercent) {
-        addLog("> PROGRESS: " + p + "% (" + needed + " remaining)", "file");
+    // Log uniquement tous les 5% pour ne pas spammer
+    if (p % 5 === 0 && p !== state.lastLoggedPercent && p > 0) {
+        addLog(`> PROGRESS: ${p}% (${needed} files remaining)`, "file");
+        state.lastLoggedPercent = p;
+    }
+
+    // Log spécial pour certains jalons
+    if (p === 25 || p === 50 || p === 75) {
+        addLog(`> MILESTONE: ${p}% complete`, "status");
+    }
+
+    // Log de fin
+    if (p >= 100) {
+        addLog("> DOWNLOAD COMPLETE", "status");
     }
 };
 
-// DOWNLOADING FILE NAME
+/**
+ * GMOD HOOK: DownloadingFile
+ * Appelé pour chaque fichier en cours de téléchargement
+ */
 window.DownloadingFile = function(fileName) {
-    addLog("> DL: " + fileName, "dl");
+    // Ne log que 1 fichier sur 3 pour éviter le spam
+    state.filesProcessed++;
+    if (state.filesProcessed % 3 === 0 || state.filesProcessed <= 5) {
+        addLog("> DL: " + fileName, "dl");
+    }
 };
 
-// JS ERROR LOG
+/**
+ * GMOD HOOK: onerror
+ * Capture les erreurs JavaScript
+ */
 window.onerror = function(msg, src, line) {
-    addLog("> JS ERROR: " + msg + " @ " + line, "error");
+    console.error("[JS ERROR]", msg, src, line);
+    addLog("> ERROR: " + msg + " @ line " + line, "error");
+    return true; // Empêche l'affichage dans la console GMOD
 };
 
 // =====================================
@@ -259,7 +312,7 @@ function typeTip(text, i = 0) {
     if (i < text.length) {
         setTimeout(() => typeTip(text, i + 1), 25);
     } else {
-        setTimeout(() => eraseTip(text, text.length), 2500);
+        setTimeout(() => eraseTip(text, text.length), 3000);
     }
 }
 
@@ -269,15 +322,15 @@ function eraseTip(text, i) {
     elements.tipText.textContent = "> " + text.substring(0, i);
 
     if (i > 0) {
-        setTimeout(() => eraseTip(text, i - 1), 18);
+        setTimeout(() => eraseTip(text, i - 1), 15);
     } else {
         state.tipIndex = (state.tipIndex + 1) % window.TIPS.length;
-        setTimeout(() => typeTip(window.TIPS[state.tipIndex]), 400);
+        setTimeout(() => typeTip(window.TIPS[state.tipIndex]), 500);
     }
 }
 
 // =====================================
-//   SYSTÈME MUSICAL AMÉLIORÉ
+//   SYSTÈME MUSICAL
 // =====================================
 function chooseTrack() {
     if (window.MUSIC_RANDOM) {
@@ -296,8 +349,9 @@ function playTrack(index) {
     elements.music.src = track.file;
     elements.music.volume = Math.min(1.0, Math.max(0.0, window.MUSIC_VOLUME));
     
+    // Tentative de lecture (peut être bloquée par le navigateur)
     elements.music.play().catch((err) => {
-        console.warn("Audio autoplay bloqué:", err);
+        console.warn("[MUSIC] Autoplay bloqué, clic requis:", err);
         state.musicEnabled = false;
         updateMusicStatus();
     });
@@ -322,7 +376,7 @@ function toggleMusic() {
     
     if (state.musicEnabled) {
         elements.music.play().catch((err) => {
-            console.warn("Impossible de lire la musique:", err);
+            console.warn("[MUSIC] Impossible de lire:", err);
             state.musicEnabled = false;
             updateMusicStatus();
         });
@@ -331,15 +385,15 @@ function toggleMusic() {
     }
     
     updateMusicStatus();
-    addLog(`> MUSIC: ${state.musicEnabled ? 'ENABLED' : 'DISABLED'}`, "info");
+    console.log("[MUSIC]", state.musicEnabled ? "ENABLED" : "DISABLED");
 }
 
 // =====================================
-//   SIMULATION DÉMO AVANCÉE
+//   SIMULATION DÉMO (POUR TEST HORS GMOD)
 // =====================================
 function runAdvancedSimulation() {
     setTimeout(() => {
-        // 1. Simulation des détails du serveur
+        // 1. Simulation GameDetails
         if (window.GameDetails) {
             window.GameDetails(
                 "SITE-19 : SECURE FACILITY", 
@@ -351,14 +405,13 @@ function runAdvancedSimulation() {
             );
         }
 
-        // 2. Simulation des changements de statut progressifs
+        // 2. Changements de statut progressifs
         const steps = [
-            { t: 0,     s: "Handshaking with Foundation Node..." },
-            { t: 3000,  s: "Verifying Level 4 Clearance..." },
-            { t: 6000,  s: "Bypassing Local Firewall..." },
-            { t: 9000,  s: "Neural link established (C.A.S.S.I.E)" },
-            { t: 12000, s: "Decrypting asset manifest..." },
-            { t: 15000, s: "Loading anomalous materials..." }
+            { t: 0,     s: "Connecting to server..." },
+            { t: 2000,  s: "Retrieving server info..." },
+            { t: 4000,  s: "Sending client info..." },
+            { t: 6000,  s: "Downloading files..." },
+            { t: 8000,  s: "Parsing game resources..." }
         ];
 
         steps.forEach(step => {
@@ -367,29 +420,30 @@ function runAdvancedSimulation() {
             }, step.t);
         });
 
-        // 3. Simulation des fichiers (avec variation de vitesse)
-        let total = 120;
+        // 3. Simulation fichiers
+        let total = 150;
         let current = 0;
         if (window.SetFilesTotal) window.SetFilesTotal(total);
 
         const files = [
             "models/scp/173.mdl",
-            "sound/alarm_01.wav",
-            "maps/graphs/rp_site19.jgh",
-            "materials/scifi/wall_panel.vmt",
+            "sound/alarm/breach.wav",
+            "maps/rp_site19_v4.bsp",
+            "materials/metal/wall_panel.vmt",
             "lua/autorun/scp_init.lua",
-            "particles/containment_breach.pcf",
+            "particles/breach_effect.pcf",
             "models/weapons/w_keycard.mdl",
-            "sound/scp/breath_heavy.wav",
-            "materials/glass/bulletproof.vmt"
+            "sound/ambient/facility.mp3",
+            "materials/glass/bulletproof.vmt",
+            "models/props/door_heavy.mdl"
         ];
 
         const fileInterval = setInterval(() => {
             current++;
             
-            // Simulation d'une erreur JS à 30%
-            if (current === 36) {
-                window.onerror("MEM_CORRUPTION: SCP-079_INTRUSION_DETECTED", "kernel.dll", 79);
+            // Simulation d'une erreur à 30%
+            if (current === 45) {
+                window.onerror("Loading interrupted: Memory allocation failed", "awesomium_process", 173);
             }
 
             const randomFile = files[Math.floor(Math.random() * files.length)];
@@ -401,13 +455,23 @@ function runAdvancedSimulation() {
                 clearInterval(fileInterval);
                 setTimeout(() => {
                     if (window.SetStatusChanged) {
-                        window.SetStatusChanged("TERMINAL READY - WELCOME DOCTOR");
+                        window.SetStatusChanged("Loading complete!");
                     }
-                    addLog("> ACCESS GRANTED. SYSTEM OPERATIONAL.", "status");
-                    addLog("> PRESS ANY KEY TO CONTINUE...", "info");
+                    addLog("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                    addLog("> ACCESS GRANTED", "status");
+                    addLog("> LOADING GAME...", "info");
+                    addLog("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
                 }, 1000);
             }
-        }, 100); // Vitesse de croisière
+        }, 80); // Vitesse réaliste
 
     }, 1500);
 }
+
+// =====================================
+//   LOGS DE DEBUG POUR GMOD
+// =====================================
+console.log("%c═══════════════════════════════════════", "color: #00ff9c");
+console.log("%c SCP LOADING TERMINAL - INITIALIZED", "color: #00ff9c; font-weight: bold");
+console.log("%c GMOD DETECTED: " + isGmod, "color: #00ff9c");
+console.log("%c═══════════════════════════════════════", "color: #00ff9c");
