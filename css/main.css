@@ -1,35 +1,39 @@
 /* ============================================
    STYLE TERMINAL SCP MODERNE (RESPONSIVE)
+   VERSION AMÉLIORÉE
 ============================================ */
 
-/* Base écran */
-body {
-  background: #000;
-  color: #00ff9c;
-  font-family: "Ubuntu Mono", monospace;
-  margin: 0;
-  overflow: hidden;
+/* ============================================
+   VARIABLES CSS
+============================================ */
+:root {
+    --primary-color: #00ff9c;
+    --bg-dark: #000;
+    --terminal-bg: rgba(0, 20, 10, 0.25);
+    --glow-color: rgba(0, 255, 156, 0.33);
+    --border-color: #00ff9c;
 }
 
 /* ============================================
-   EFFET CRT
+   BASE
 ============================================ */
-.crt::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(0, 255, 150, 0.07) 0px,
-    rgba(0, 255, 150, 0.07) 1px,
-    rgba(0, 255, 150, 0.02) 2px
-  );
-  mix-blend-mode: screen;
-  z-index: 5;
-  opacity: 0.25;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
+body {
+    background: var(--bg-dark);
+    color: var(--primary-color);
+    font-family: "Ubuntu Mono", monospace;
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* ============================================
+   EFFET CRT AMÉLIORÉ
+============================================ */
 .crt {
     position: fixed;
     inset: 0;
@@ -37,44 +41,56 @@ body {
     z-index: 999;
     /* Vignettage : assombrit les bords pour simuler l'écran cathodique */
     background: radial-gradient(circle, rgba(0,0,0,0) 60%, rgba(0,0,0,0.8) 120%);
-    /* Optionnel : légère distorsion si tu veux pousser le style */
+}
+
+.crt::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+        to bottom,
+        rgba(0, 255, 150, 0.07) 0px,
+        rgba(0, 255, 150, 0.07) 1px,
+        transparent 2px,
+        transparent 3px
+    );
+    mix-blend-mode: screen;
+    z-index: 5;
+    opacity: 0.3;
+    animation: scanMove 8s linear infinite;
+}
+
+@keyframes scanMove {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(4px); }
 }
 
 /* ============================================
-   CONTAINER RESPONSIVE
+   CONTAINER RESPONSIVE OPTIMISÉ
 ============================================ */
-/* Taille contrôlée du terminal – empêche qu'il prenne tout l'écran */
 #terminal-container {
-    width: 60vw;                  /* largeur stable */
-    max-width: 900px;             /* limite haute */
-    min-width: 580px;             /* limite basse */
-    margin: 5vh auto;             /* centré */
+    width: 60vw;
+    max-width: 900px;
+    min-width: 580px;
+    margin: 5vh auto;
     padding: 25px;
-
-    background: rgba(0, 20, 10, 0.25);
-    border: 2px solid #00ff9c;
-    box-shadow: 0 0 25px #00ff9c55;
+    
+    background: var(--terminal-bg);
+    border: 2px solid var(--border-color);
+    box-shadow: 0 0 25px var(--glow-color);
     position: relative;
     border-radius: 6px;
-
-    max-height: 90vh;             /* NE JAMAIS déborder l’écran */
+    
+    max-height: 100vh;
     overflow: hidden;
-
-    animation: terminalFadeIn 1.5s ease-out, flicker 0.15s infinite;
-}
-
-@keyframes flicker {
-    0% { opacity: 0.993; }
-    5% { opacity: 0.985; }
-    10% { opacity: 0.995; }
-    15% { opacity: 0.98; }
-    100% { opacity: 1; }
+    
+    animation: terminalFadeIn 1.5s ease-out;
 }
 
 @keyframes terminalFadeIn {
     0% {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(20px) scale(0.98);
         filter: brightness(0);
     }
     40% {
@@ -83,7 +99,7 @@ body {
     }
     100% {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
         filter: brightness(1);
     }
 }
@@ -111,24 +127,95 @@ body {
     100% { transform: translateY(100%); opacity: 0; }
 }
 
-
 /* ============================================
-   HEADER
+   HEADER CASSIE AMÉLIORÉ
 ============================================ */
-#terminal-header {
-  font-size: clamp(16px, 2vw, 26px);
-  margin-bottom: 16px;
-  text-shadow: 0 0 8px #00ff9c;
-  letter-spacing: 2px;
+.cassie-header {
+    font-size: clamp(18px, 2.5vw, 28px);
+    margin-bottom: 16px;
+    text-shadow: 0 0 12px var(--primary-color);
+    letter-spacing: 3px;
+    text-align: center;
+    position: relative;
+    padding: 8px 0;
+    animation: cassieReveal 2s ease-out;
+}
+
+@keyframes cassieReveal {
+    0% {
+        opacity: 0;
+        letter-spacing: 20px;
+        filter: blur(10px);
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+        letter-spacing: 3px;
+        filter: blur(0);
+    }
 }
 
 /* ============================================
-   CORPS DU TERMINAL RESPONSIVE
+   GLITCH SCP OPTIMISÉ (RGB SPLIT)
+============================================ */
+.glitch {
+    position: relative;
+    display: inline-block;
+    font-size: clamp(14px, 1.8vw, 22px);
+    margin-bottom: 20px;
+    text-align: center;
+    width: 100%;
+}
+
+.glitch::before,
+.glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    width: 100%;
+    color: var(--primary-color);
+    pointer-events: none;
+}
+
+.glitch::before {
+    animation: glitch-1 0.5s infinite linear alternate-reverse;
+    text-shadow: 2px 0 #ff00de;
+    clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+}
+
+.glitch::after {
+    animation: glitch-2 0.7s infinite linear alternate-reverse;
+    text-shadow: -2px 0 #00fff9;
+    clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+}
+
+@keyframes glitch-1 {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+    100% { transform: translate(0); }
+}
+
+@keyframes glitch-2 {
+    0% { transform: translate(0); }
+    20% { transform: translate(2px, -2px); }
+    40% { transform: translate(2px, 2px); }
+    60% { transform: translate(-2px, -2px); }
+    80% { transform: translate(-2px, 2px); }
+    100% { transform: translate(0); }
+}
+
+/* ============================================
+   CORPS DU TERMINAL
 ============================================ */
 #terminal-body {
-  font-size: clamp(14px, 1.5vw, 20px);
-  line-height: 1.55em;
-  pointer-events: auto;
+    font-size: clamp(14px, 1.5vw, 20px);
+    line-height: 1.6em;
+    pointer-events: auto;
 }
 
 button, .clickable {
@@ -137,201 +224,182 @@ button, .clickable {
 }
 
 .line-sep {
-  border-bottom: 1px dashed #00ff9c88;
-  margin: 12px 0;
-}
-
-#line {
-  white-space: pre;
+    border-bottom: 1px dashed rgba(0, 255, 156, 0.5);
+    margin: 12px 0;
 }
 
 /* ============================================
    CURSEUR
 ============================================ */
 #cursor {
-  display: inline-block;
-  margin-top: 10px;
-  animation: blink 0.9s infinite alternate;
+    display: inline-block;
+    margin-left: 2px;
+    animation: blink 0.8s infinite alternate;
 }
 
 @keyframes blink {
-  0% { opacity: 1; }
-  100% { opacity: 0; }
+    0% { opacity: 1; }
+    100% { opacity: 0; }
 }
 
 /* ============================================
-   ZONE STATUS / LOADING
-============================================ */
-#loading {
-  margin-top: 15px;
-  font-size: clamp(12px, 1.3vw, 18px);
-  color: #b0ffde;
-}
-
-/* Désactivation éléments inutiles du template */
-.background,
-.overhaul,
-.under-nav,
-.loading-box,
-nav,
-main,
-#debug { display: none !important; }
-
-/* ============================================
-   SCANLINES
-============================================ */
-#terminal-wrapper {
-    position: relative;
-    overflow: hidden;
-}
-
-#terminal-wrapper::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(
-        to bottom,
-        rgba(0, 255, 150, 0.07) 0px,
-        rgba(0, 255, 150, 0.07) 2px,
-        transparent 3px,
-        transparent 5px
-    );
-    mix-blend-mode: screen;
-    pointer-events: none;
-    animation: scanMove 6s linear infinite;
-}
-
-@keyframes scanMove {
-    0% { transform: translateY(-100%); }
-    100% { transform: translateY(100%); }
-}
-
-/* ============================================
-   EFFET TYPING
+   TYPING EFFECT
 ============================================ */
 .typing {
     display: inline-block;
-    border-right: 2px solid #00ff9c;
+    border-right: 2px solid var(--primary-color);
+    padding-right: 2px;
     animation: typingCursor 0.9s steps(2) infinite;
 }
 
 @keyframes typingCursor {
     0% { border-color: transparent; }
-    50% { border-color: #00ff9c; }
+    50% { border-color: var(--primary-color); }
 }
 
 /* ============================================
-   GLITCH SCP-079
+   CONTAINMENT FRAME OPTIMISÉ
 ============================================ */
-.glitch {
+.containment-frame {
     position: relative;
-    display: inline-block;
-    animation: glitch-skew 1.3s infinite linear alternate-reverse;
+    margin: 15px 0;
 }
 
-.glitch::before,
-.glitch::after {
-    content: attr(data-text);
+.containment-frame::before {
+    content: "[ CONTAINMENT LOG ]";
     position: absolute;
-    left: 0;
-    top: 0;
-    color: #00ff9c;
-    pointer-events: none;
-    clip-path: inset(0 0 0 0);
-}
-
-.glitch::before {
-    transform: translate(-2px, -1px);
-    opacity: 0.65;
-    animation: glitch-before 0.35s infinite linear alternate-reverse;
-}
-
-.glitch::after {
-    transform: translate(2px, 1px);
-    opacity: 0.4;
-    animation: glitch-after 0.25s infinite linear alternate-reverse;
-}
-
-@keyframes glitch-skew {
-    0% { transform: skew(0deg); }
-    100% { transform: skew(2deg); }
-}
-
-@keyframes glitch-before {
-    0% { clip-path: inset(0 0 40% 0); }
-    100% { clip-path: inset(60% 0 0 0); }
-}
-
-@keyframes glitch-after {
-    0% { clip-path: inset(0 0 85% 0); }
-    100% { clip-path: inset(20% 0 0 0); }
+    top: -10px;
+    left: 10px;
+    background: var(--bg-dark);
+    padding: 0 8px;
+    font-size: 12px;
+    color: var(--primary-color);
+    opacity: 0.7;
+    z-index: 1;
 }
 
 /* ============================================
-   LOGS RESPONSIVE
+   LOGS RESPONSIVE AMÉLIORÉ
 ============================================ */
 #history {
     font-family: "Ubuntu Mono", monospace;
-    color: #00ff9c;
-    background: rgba(0, 20, 10, 0.25);
-    border: 1px solid #00ff9c88;
-    padding: 10px 12px;
+    color: var(--primary-color);
+    background: rgba(0, 20, 10, 0.4);
+    border: 1px solid rgba(0, 255, 156, 0.5);
+    padding: 15px;
     margin-top: 10px;
     white-space: pre-wrap;
     max-height: min(40vh, 450px);
     overflow-y: auto;
-    line-height: 1.45em;
-    box-shadow: inset 0 0 10px #00ff9c33;
+    line-height: 1.5em;
+    box-shadow: inset 0 0 15px var(--glow-color);
     font-size: clamp(12px, 1.3vw, 16px);
-    mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 100%);
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 100%);
+    border-radius: 3px;
+    
+    /* Scrollbar personnalisée */
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) transparent;
 }
 
-/* Scrollbar invisible */
-#history {
-    scrollbar-width: none; 
-    -ms-overflow-style: none;
+/* Scrollbar Webkit */
+#history::-webkit-scrollbar {
+    width: 6px;
 }
-#history::-webkit-scrollbar { display: none!important; }
 
-/* Logs colorés */
-.log-line { margin-bottom: 4px; }
+#history::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#history::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 3px;
+    opacity: 0.5;
+}
+
+#history::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 255, 156, 0.8);
+}
+
+/* ============================================
+   LOGS COLORÉS AMÉLIORÉS
+============================================ */
+.log-line {
+    margin-bottom: 6px;
+    opacity: 0;
+    animation: logFadeIn 0.3s ease-out forwards;
+}
+
+@keyframes logFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.log-time {
+    opacity: 0.5;
+    margin-right: 6px;
+    font-size: 0.9em;
+}
+
 .log-status { color: #7affc6; }
 .log-dl     { color: #a6ffd9; }
 .log-file   { color: #4fffd0; }
+.log-info   { color: var(--primary-color); }
 
 .log-error {
     color: #ff6b6b;
     background: rgba(255, 107, 107, 0.15);
-    padding: 0 5px;
+    padding: 2px 6px;
     border-radius: 2px;
     display: inline-block;
-    width: 100%;
-    animation: alert-blink 0.6s step-end infinite;
+    animation: errorPulse 1s ease-in-out infinite;
 }
 
-@keyframes alert-blink {
-    50% { background: rgba(255, 107, 107, 0.3); color: #fff; }
-}
-
-.log-info   { color: #00ff9c; }
-
-.log-time {
-    opacity: 0.6;
-    margin-right: 4px;
-    font-size: clamp(10px, 1.2vw, 14px);
+@keyframes errorPulse {
+    0%, 100% {
+        background: rgba(255, 107, 107, 0.15);
+        box-shadow: 0 0 5px rgba(255, 107, 107, 0.3);
+    }
+    50% {
+        background: rgba(255, 107, 107, 0.3);
+        box-shadow: 0 0 10px rgba(255, 107, 107, 0.6);
+    }
 }
 
 /* ============================================
-   TIPS
+   STATUS / LOADING AMÉLIORÉ
+============================================ */
+#loading {
+    margin-top: 15px;
+    padding: 10px;
+    background: rgba(0, 255, 156, 0.05);
+    border-left: 3px solid var(--primary-color);
+    font-size: clamp(12px, 1.3vw, 18px);
+    color: #b0ffde;
+}
+
+#percent {
+    font-weight: bold;
+    color: var(--primary-color);
+    text-shadow: 0 0 8px var(--primary-color);
+}
+
+/* ============================================
+   TIPS OPTIMISÉ
 ============================================ */
 #tip-container {
-    margin-top: 8px;
+    margin-top: 12px;
     font-size: clamp(12px, 1.4vw, 17px);
-    color: #00ff9c;
-    opacity: 0.85;
+    color: var(--primary-color);
+    opacity: 0.75;
     display: flex;
     align-items: center;
+    min-height: 24px;
 }
 
 #tip-text {
@@ -339,18 +407,42 @@ main,
 }
 
 /* ============================================
-   MUSIQUE — LABEL
+   MUSIQUE – LABEL AMÉLIORÉ
 ============================================ */
 #music-status {
     position: absolute;
-    top: 10px;
-    right: 14px;
-    color: #00ff9c88;
-    font-size: clamp(10px, 1.2vw, 15px);
+    top: 12px;
+    right: 16px;
+    color: rgba(0, 255, 156, 0.6);
+    font-size: clamp(10px, 1.2vw, 14px);
     font-family: "Ubuntu Mono", monospace;
-    opacity: 0.7;
     user-select: none;
-    text-align: right;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 4px 8px;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    z-index: 10;
+}
+
+#music-status:hover {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+    background: rgba(0, 255, 156, 0.1);
+    transform: scale(1.05);
+}
+
+/* ============================================
+   DÉSACTIVATION ÉLÉMENTS INUTILES
+============================================ */
+.background,
+.overhaul,
+.under-nav,
+.loading-box,
+nav,
+main,
+#debug {
+    display: none !important;
 }
 
 /* ============================================
@@ -360,5 +452,37 @@ main,
     #terminal-container {
         scale: 0.87;
         transform-origin: top center;
+    }
+}
+
+/* RESPONSIVE MOBILE */
+@media (max-width: 650px) {
+    #terminal-container {
+        min-width: 95vw;
+        width: 95vw;
+        padding: 15px;
+        margin: 2vh auto;
+    }
+    
+    .cassie-header {
+        font-size: 16px;
+        letter-spacing: 1px;
+    }
+    
+    .glitch {
+        font-size: 14px;
+    }
+}
+
+/* ============================================
+   PERFORMANCE – DISABLE ANIMATIONS
+============================================ */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
     }
 }

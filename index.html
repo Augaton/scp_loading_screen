@@ -16,7 +16,7 @@
 <body>
 
     <audio id="music-player" loop></audio>
-    <div id="music-status"></div>
+    <div id="music-status" title="Click to toggle music">♪ MUSIC: LOADING...</div>
 
     <!-- Effet CRT -->
     <div class="crt"></div>
@@ -24,7 +24,7 @@
     <div id="terminal-container">
 
         <!-- HEADER CASSIE ANIMÉ -->
-        <h1 class="cassie-header cassie-reveal" data-text="LINK ESTABLISHED WITH C.A.S.S.I.E">
+        <h1 class="cassie-header" data-text="LINK ESTABLISHED WITH C.A.S.S.I.E">
             LINK ESTABLISHED WITH C.A.S.S.I.E
         </h1>
 
@@ -50,8 +50,8 @@
 
             <!-- STATUS + PROGRESSION -->
             <div id="loading">
-                > STATUS: <span id="status"></span><br>
-                > PROGRESS: <span id="percent"></span>
+                > STATUS: <span id="status">INITIALIZING...</span><br>
+                > PROGRESS: <span id="percent">0%</span>
             </div>
 
             <div id="tip-container">
