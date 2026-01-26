@@ -43,12 +43,11 @@ window.TERMINAL_CONFIG = {
 // ============================================
 window.TIPS = [
     "Astuce : Vous pouvez rejoindre Discord pour plus d'infos.",
-    "Astuce : Les addons se chargent plus vite si vous videz le cache.",
     "Astuce : Ne quittez pas, C.A.S.S.I.E optimise la connexion.",
-    "Astuce : Votre SteamID est utilisé pour synchroniser les données.",
-    "Astuce : Les fichiers Workshop peuvent prendre quelques minutes.",
-    "Info : Le terminal est optimisé pour les connexions lentes.",
-    "Conseil : Vérifiez votre pare-feu si le chargement bloque.",
+    "Astuce : N'hésitée pas a inviter vos amis.",
+    "Astuce : Respecter les règles du serveur pour évitée les sanctions.",
+    "Info : Le loading screen est optimisé pour les connexions lentes.",
+    "Info : L'installation des addons peut prendre un peu de temps.",
     "Note : La progression est calculée en temps réel."
 ];
 
@@ -57,7 +56,7 @@ window.TIPS = [
 // ============================================
 window.MUSIC_LIST = [
     { name: "When Day Breaks", file: "music/music1.mp3" },
-    // { name: "Dying to Love", file: "music/music2.mp3" },
+    { name: "PostMortem", file: "music/music2.mp3" },
     // { name: "Left For Good", file: "music/music3.mp3" }
 ];
 
