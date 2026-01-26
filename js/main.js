@@ -72,7 +72,13 @@ window.onload = () => {
         // Auto-switch piste quand terminée
         if (elements.music) {
             elements.music.addEventListener("ended", () => {
-                state.currentTrack = chooseTrack();
+
+                if (window.MUSIC_RANDOM) {
+                    state.currentTrack = Math.floor(Math.random() * window.MUSIC_LIST.length);
+                } else {
+                    state.currentTrack = (state.currentTrack + 1) % window.MUSIC_LIST.length;
+                }
+
                 playTrack(state.currentTrack);
             });
         }
@@ -178,7 +184,9 @@ function setTyped(id, text, speed = null) {
 function randomGlitch() {
     if (!state.allowHeaderGlitch || !elements.header) return;
 
-    const phrases = window.TERMINAL_CONFIG.phrases || ["SCP FOUNDATION"];
+    const phrases = window.TERMINAL_CONFIG.phrases;
+    if (!phrases || phrases.length === 0) return;
+
     const pick = phrases[Math.floor(Math.random() * phrases.length)];
 
     elements.header.textContent = pick;
@@ -346,12 +354,16 @@ function playTrack(index) {
     const track = window.MUSIC_LIST[index];
     if (!track || !elements.music) return;
 
+    // Conversion et sécurité volume
+    let targetVolume = parseFloat(window.MUSIC_VOLUME);
+    if (targetVolume > 1) targetVolume /= 100;
+
     elements.music.src = track.file;
-    elements.music.volume = Math.min(1.0, Math.max(0.0, window.MUSIC_VOLUME));
-    
-    // Tentative de lecture (peut être bloquée par le navigateur)
+    elements.music.volume = Math.min(1.0, Math.max(0.0, targetVolume || 0));
+
+    // Tentative de lecture
     elements.music.play().catch((err) => {
-        console.warn("[MUSIC] Autoplay bloqué, clic requis:", err);
+        console.warn("[MUSIC] Bloqué par le navigateur ou fichier manquant:", track.file);
         state.musicEnabled = false;
         updateMusicStatus();
     });
