@@ -6,28 +6,28 @@
 window.TERMINAL_CONFIG = {
 
     // Message affiché en haut du terminal
-    announcement: "> SECURE CONNECTION WITH FOUNDATION NODE ESTABLISHED",
+    announcement: "> CONNEXION SÉCURISÉE AVEC LE NŒUD DE L'INTRANET SHILARI-Z ÉTABLIE",
 
     // Couleur principale (si besoin d'ajuster dynamiquement)
     color: "#00ff9c",
 
     // Nombre max de lignes dans le terminal
-    maxLines: 120,
+    maxLines: 10,
 
     // Préfix terminal
     prefix: "> ",
 
     // Phrases pour l'effet glitch du header
     phrases: [
-        "SCP FOUNDATION // SECURE LOAD TERMINAL",
-        "ACCESSING NODE…",
-        "LINK ESTABLISHED WITH CASSIE",
-        "WARNING: REALITY INSTABILITY",
-        "SCP-079 SIGNAL DETECTED",
-        "SYSTEM HOOK: LEVEL-3 AUTH",
-        "ANOMALY DETECTED // SECTOR-7",
-        "CONTAINMENT BREACH PROTOCOL",
-        "MEMETIC HAZARD FILTER ACTIVE"
+        "FONDATION SCP // TERMINAL DE CHARGEMENT SÉCURISÉ",
+        "ACCÈS AU NŒUD EN COURS...",
+        "LIAISON ÉTABLIE AVEC C.A.S.S.I.E.",
+        "ATTENTION : INSTABILITÉ DE LA RÉALITÉ",
+        "SIGNAL DE SCP-079 DÉTECTÉ",
+        "ACCÈS SYSTÈME : AUTHENTIFICATION NIVEAU 3",
+        "ANOMALIE DÉTECTÉE // SECTEUR-7",
+        "PROTOCOLE DE BRÈCHE DE CONFINEMENT",
+        "FILTRE À RISQUES MÉMÉTIQUES ACTIF"
     ],
 
     // Vitesse de typing (ms par caractère)
