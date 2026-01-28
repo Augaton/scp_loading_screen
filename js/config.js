@@ -44,8 +44,8 @@ window.TERMINAL_CONFIG = {
 window.TIPS = [
     "Astuce : Vous pouvez rejoindre Discord pour plus d'infos.",
     "Astuce : Ne quittez pas, C.A.S.S.I.E optimise la connexion.",
-    "Astuce : N'hésitée pas a inviter vos amis.",
-    "Astuce : Respecter les règles du serveur pour évitée les sanctions.",
+    "Astuce : N'hésitez pas à inviter vos amis.",
+    "Astuce : Respectez les règles du serveur pour éviter les sanctions.",
     "Info : Le loading screen est optimisé pour les connexions lentes.",
     "Info : L'installation des addons peut prendre un peu de temps.",
     "Note : La progression est calculée en temps réel."
